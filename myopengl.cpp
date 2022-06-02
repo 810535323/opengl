@@ -37,11 +37,11 @@ const char *fragmentShaderSource = "#version 330 core\n"
         "}\n\0";
 --------------------------------------------------------*/
 float vertices[] = { //给定位置点
-    // 位置              // 颜色
-    -0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,    // 左上
-     0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 右上
-     0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   // 右下
-    -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,   // 左下
+    // 位置              // 颜色            // 纹理
+    -0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,     // 左上
+     0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,    // 右上
+     0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,    // 右下
+    -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 0.0f,    // 左下
 };
 
 unsigned int indices[] = { //制定三角点
@@ -106,13 +106,14 @@ void myOpenGl::initializeGL() //初始化创建VAO、VBO、EBO对象并添加顶
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     //告知显卡如何解析缓冲里的属性值
     //第一段位置
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     //开启VAO管理的第一个属性值
-    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 //    //编译顶点着色器
@@ -147,6 +148,9 @@ void myOpenGl::initializeGL() //初始化创建VAO、VBO、EBO对象并添加顶
         qDebug()<<"ERROR::SHADER::PROGRAM::LINKING_FAILED!\n"<<shaderProgram.log();
     }
 
+    bearTexture = new QOpenGLTexture(QImage(":/img/img/bear.png").mirrored());
+    chickenTexture = new QOpenGLTexture(QImage(":/img/img/chicken.png").mirrored());
+    glBindVertexArray(0);
 //    //删除顶点、片段着色器
 //    glDeleteShader(vertexShader);
 //    glDeleteShader(fragmentShader);
@@ -165,12 +169,16 @@ void myOpenGl::paintGL()
     
     //使用编译程序
     shaderProgram.bind();
+    shaderProgram.setUniformValue("bearTexture",0); //绑定纹理1
+    shaderProgram.setUniformValue("chickenTexture",1); //绑定纹理2
     //绑定VAO
     glBindVertexArray(VAO);
     //绘制图形
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     switch (m_shape) {
     case Rect:
+        bearTexture->bind(0);
+        chickenTexture->bind(1);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
         break;
     default:

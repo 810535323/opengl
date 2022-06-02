@@ -3,4 +3,8 @@
         <file>fragment.fsh</file>
         <file>vertex.vsh</file>
     </qresource>
+    <qresource prefix="/img">
+        <file>img/bear.png</file>
+        <file>img/chicken.png</file>
+    </qresource>
 </RCC>

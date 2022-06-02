@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLWidget>
 #include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
 
 class myOpenGl : public QOpenGLWidget,QOpenGLFunctions_3_3_Core
 {
@@ -22,6 +23,8 @@ protected:
 private:
     QOpenGLShaderProgram shaderProgram; //导入顶点、片段着色器文件与简化编译连接操作
     Shape m_shape; //判断输入类型
+    QOpenGLTexture *bearTexture;
+    QOpenGLTexture *chickenTexture;
 signals:
 
 public slots:
